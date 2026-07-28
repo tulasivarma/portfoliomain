@@ -39,11 +39,11 @@ export default function About() {
             <h2 className="section-heading">{about.heading}</h2>
           </div>
 
-          <BlurReveal as="div" className="about-card__body" scrub>
+          <div className="about-card__body" >
             {about.paragraphs.map((paragraph) => (
               <p key={paragraph.slice(0, 24)}>{paragraph}</p>
             ))}
-          </BlurReveal>
+          </div>
 
           <div className="about-card__brings">
             <h3>{about.whatIBring.heading}</h3>
