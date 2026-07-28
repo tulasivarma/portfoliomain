@@ -21,13 +21,17 @@ export default function Hero() {
       gsap.matchMedia().add(
         '(max-width: 900px) and (prefers-reduced-motion: no-preference)',
         () => {
+          let endMargin = -portraitEl.offsetHeight * 2;
+
           const trigger = ScrollTrigger.create({
             trigger: heroEl,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
+            onRefresh: () => {
+              endMargin = -portraitEl.offsetHeight * 2;
+            },
             onUpdate: (self) => {
-              const endMargin = -portraitEl.offsetHeight * 2;
               const margin = gsap.utils.interpolate(-200, endMargin, self.progress);
               heroEl.style.marginBottom = `${margin}px`;
             },
