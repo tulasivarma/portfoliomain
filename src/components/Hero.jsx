@@ -1,14 +1,51 @@
+import { useRef, useEffect } from 'react';
 import { hero } from '../data/content';
 import { useTypewriter } from '../hooks/useTypewriter';
 import heroPortrait from '../assets/images/hero-portrait.png';
 import StaggerReveal from './StaggerReveal';
+import gsap from '../lib/gsapConfig';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 import './Hero.css';
 
 export default function Hero() {
   const typedRole = useTypewriter(hero.roles);
+  const heroRef = useRef(null);
+  const portraitRef = useRef(null);
+
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    const portraitEl = portraitRef.current;
+    if (!heroEl || !portraitEl) return undefined;
+
+    const ctx = gsap.context(() => {
+      gsap.matchMedia().add(
+        '(max-width: 900px) and (prefers-reduced-motion: no-preference)',
+        () => {
+          const trigger = ScrollTrigger.create({
+            trigger: heroEl,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            onUpdate: (self) => {
+              const endMargin = -portraitEl.offsetHeight * 2;
+              const margin = gsap.utils.interpolate(-200, endMargin, self.progress);
+              heroEl.style.marginBottom = `${margin}px`;
+            },
+          });
+
+          return () => {
+            trigger.kill();
+            heroEl.style.marginBottom = '';
+          };
+        }
+      );
+    }, heroEl);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="top" className="hero">
+    <section id="top" className="hero" ref={heroRef}>
 
 
       <div className="container">
@@ -53,8 +90,12 @@ export default function Hero() {
           </div>
         </StaggerReveal>
       </div>
-      <div className="hero__portrait">
-        <img src={heroPortrait} alt="Portrait of Tulasi Ram" />
+      <div className="hero__portrait" ref={portraitRef}>
+        <img
+          src={heroPortrait}
+          alt="Portrait of Tulasi Ram"
+          onLoad={() => ScrollTrigger.refresh()}
+        />
       </div>
     </section>
   );
