@@ -27,7 +27,7 @@ export default function Hero() {
             trigger: heroEl,
             start: 'top top',
             end: 'bottom top',
-            scrub: 1,
+            scrub: true,
             onRefresh: () => {
               endMargin = -portraitEl.offsetHeight * 2;
             },
